@@ -71,9 +71,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\OpenGL Projects\imports\include\ImGUI;C:\OpenGL Projects\imports\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\OpenGL Projects\SceneTest\vendor\include\ImGUI;C:\OpenGL Projects\SceneTest\vendor\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>C:\OpenGL Projects\imports\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\OpenGL Projects\SceneTest\vendor\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\OpenGL Projects\SceneTest\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
