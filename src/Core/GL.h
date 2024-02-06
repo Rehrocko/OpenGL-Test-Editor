@@ -4,7 +4,8 @@
 namespace GL {
 	void Init(int width, int height);
 	void ProcessInput();
-	bool WindowIsOpen();
+	void SwapBuffersPollEvents();
+	void Terminate();
 	bool WindowIsOpen();
 	int  GetWindowWidth();
 	int  GetWindowHeight();
@@ -13,9 +14,13 @@ namespace GL {
 	void DisableCursor();
 	void HideCursor();
 	void ShowCursor();
+	void ToggleCursor();
 	GLFWwindow* GetWindowPtr();
 	int GetCursorScreenX();
 	int GetCursorScreenY();
+	bool WindowHasFocus();
+	bool WindowHasNotBeenForceClosed();
+	void ForceCloseWindow();
 
 	enum WindowMode { WINDOWED, FULLSCREEN };
 	void CreateWindow(WindowMode windowMode);

@@ -1,72 +1,132 @@
 #include "Common.h"
 #include "util.hpp"
 #include "Engine.h"
-#include "Renderer/renderer.h"
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+#include "Renderer/Renderer.h"
+#include "Core/GL.h"
+#include "Core/Input.h"
+#include "Core/Player.h"
+#include "Core/Scene.h"
+#include "Core/UI.h"
+#include "EngineState.h"
 
 GLFWwindow* window;
 
 void Engine::Run() {
-    Init();
 
-    double oldTime = glfwGetTime();
-    double currentTime = oldTime;
-    double dTAccumulator = 0.0;
-    double fixedDeltaTime = 1.0 / 60.0; // 60.0 being the TPS for physics wanted
+    // WIndow Initialize
+    GL::Init(1920, 1000);
 
-    while (!glfwWindowShouldClose(window)) {
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // CHANGE THIS TO TRUE WHEN FINISH ASSET MANAGER
+    // CHANGE THIS TO TRUE WHEN FINISH ASSET MANAGER
+    // CHANGE THIS TO TRUE WHEN FINISH ASSET MANAGER
+    // CHANGE THIS TO TRUE WHEN FINISH ASSET MANAGER
+    bool assetManagerDone = false;
 
-        // Time stuff
-        oldTime = currentTime;
-        currentTime = glfwGetTime();
-        double deltaTime = currentTime - oldTime;
-        dTAccumulator += deltaTime;
+    while (GL::WindowIsOpen() && assetManagerDone == true) {
 
-        while (dTAccumulator >= fixedDeltaTime) {
-            dTAccumulator -= fixedDeltaTime;
-            // Physics runs here
+        if (Input::KeyPressed(GLFW_KEY_F)) {
+            GL::ToggleFullscreen();
         }
-        Renderer::RenderFrame();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        if (Input::KeyPressed(GLFW_KEY_ESCAPE)) {
+            return;
+        }
+        GL::ProcessInput();
+        Input::Update();
     }
 
-    glfwTerminate();
+    Init();
+
+    double lastFrame = glfwGetTime();
+    double thisFrame = lastFrame;
+    double deltaTimeAccumulator = 0.0;
+    double fixedDeltaTime = 1.0 / 60.0;
+
+    while (GL::WindowIsOpen() && GL::WindowHasNotBeenForceClosed()) {
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        lastFrame = thisFrame;
+        thisFrame = glfwGetTime();
+        double deltaTime = thisFrame - lastFrame;
+        deltaTimeAccumulator += deltaTime;
+
+        GL::ProcessInput();
+
+        // ************************************* //
+        // ************** UPDATES ************** //
+        // ************************************* //
+        UIHandler::Update(deltaTime);
+        Input::Update();
+        Scene::Update(deltaTime);
+        KeyPresses();
+
+        // ************************************* //
+        // ************** RENDERS ************** //
+        // ************************************* //
+        Renderer::RenderFrame(&Scene::_players[0]);
+        UIHandler::Render();
+
+        GL::SwapBuffersPollEvents();
+    }
+
+    GL::Terminate();
     return;
 }
 
 void Engine::Init() {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Scene test", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return;
-    }
-
-    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-
-    //glfwSetKeyCallback(window, KeyPress);
+    Input::Init();
+    Scene::Load();
+    Scene::LoadPlayers();
 
     Renderer::Init();
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
+void Engine::KeyPresses() {
+    if (Input::KeyPressed(GLFW_KEY_F)) {
+        GL::ToggleFullscreen();
+    }
+    if (Input::KeyPressed(GLFW_KEY_Z)) {
+        GL::ToggleCursor();
+    }
+    if (EngineState::engineState == "EDITOR") {
+        if (Input::KeyPressed(GLFW_KEY_KP_ADD)) {
+            UIHandler::gridSize += 5;
+            UIHandler::floorPlanSpeed -= 0.01f;
+            if (UIHandler::floorPlanSpeed < 0.05f) UIHandler::floorPlanSpeed = 0.05f;
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyPressed(GLFW_KEY_KP_SUBTRACT)) {
+            UIHandler::gridSize -= 5;
+            UIHandler::floorPlanSpeed += 0.01f;
+            if (UIHandler::floorPlanSpeed > 0.15f) UIHandler::floorPlanSpeed = 0.15f;
+            if (UIHandler::gridSize < 5) {
+                UIHandler::gridSize = 5;
+            }
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyDown(GLFW_KEY_W)) {
+            UIHandler::offset.z -= UIHandler::floorPlanSpeed;
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyDown(GLFW_KEY_S)) {
+            UIHandler::offset.z += UIHandler::floorPlanSpeed;
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyDown(GLFW_KEY_A)) {
+            UIHandler::offset.x -= UIHandler::floorPlanSpeed;
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyDown(GLFW_KEY_D)) {
+            UIHandler::offset.x += UIHandler::floorPlanSpeed;
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyPressed(GLFW_KEY_N)) {
+            if (UIHandler::mode == "WALL") UIHandler::CreateWall();
+            if (UIHandler::mode == "FLOOR") UIHandler::CreateFloor();
+            if (UIHandler::mode == "TRIFLOOR") UIHandler::CreateTriFloor();
+            UIHandler::HideCursor();
+        }
+        if (Input::KeyPressed(GLFW_KEY_C) && UIHandler::mode == "TRIFLOOR")
+            UIHandler::cycle = !UIHandler::cycle;
+    }
 }

@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\OpenGL Projects\imports\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\OpenGL Projects\imports\include\ImGUI;C:\OpenGL Projects\imports\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>C:\OpenGL Projects\imports\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\OpenGL Projects\SceneTest\src;$(SourcePath)</SourcePath>
@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\OpenGL Projects\imports\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +144,17 @@
     <ClCompile Include="src\Core\GL.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\Player.cpp" />
+    <ClCompile Include="src\Core\SaveManager.cpp" />
+    <ClCompile Include="src\Core\Scene.cpp" />
+    <ClCompile Include="src\Core\UI.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\ImGui\imgui.cpp" />
+    <ClCompile Include="src\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
@@ -151,17 +162,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\Core\AssetManager.h" />
     <ClInclude Include="src\Core\GL.h" />
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\Player.h" />
+    <ClInclude Include="src\Core\SaveManager.h" />
+    <ClInclude Include="src\Core\Scene.h" />
+    <ClInclude Include="src\Core\UI.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\EngineState.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\util.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\test.frag" />
-    <None Include="resources\shaders\test.vert" />
+    <None Include="resources\shaders\geometry.frag" />
+    <None Include="resources\shaders\geometry.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,10 +1,12 @@
 #pragma once
 #include "../Common.h"
 #include "../util.hpp"
+#include "../Core/Player.h"
 
 namespace Renderer {
 	void Init();
-	void RenderFrame();
+	void RenderFrame(Player* player);
 	void ReloadShaders();
-	void ToggleWireframe();
+
+	glm::mat4 GetProjectionMatrix(float depthOfField);
 }
