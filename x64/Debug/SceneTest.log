@@ -1,4 +1,0 @@
-﻿  Engine.cpp
-C:\OpenGL Projects\SceneTest\src\Engine.cpp(58,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\OpenGL Projects\SceneTest\src\Engine.cpp(60,23): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  SceneTest.vcxproj -> C:\OpenGL Projects\SceneTest\x64\Debug\SceneTest.exe
